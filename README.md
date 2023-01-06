@@ -17,3 +17,9 @@ Para la conexión con la BD opté por disponerla accesible públicamente. No obs
 #### Tablas
 
 Los ddl de la creación de las tablas se encuentran en ".../Database/DDL Tables"
+
+### Move historic data from files in CSV format to the new database
+
+Para este punto opté por utilizar el servicio **AWS Lambda.** Este servicio es serverless, por lo que es rápido, ágil y de bajo costo.
+
+El código de esta función lambda y el template de implementación por CloudFormation se encuentran en ".../Lambda/History/"
