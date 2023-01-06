@@ -1,0 +1,31 @@
+CREATE VIEW `view2` AS
+select
+    `d`.`id` AS `id`,
+    `d`.`department` AS `department`,
+    count(`he`.`department_id`) AS `hired`
+from
+    (`hired_employees` `he`
+join `departments` `d` on
+    ((`he`.`department_id` = `d`.`id`)))
+where
+    (year(str_to_date(`he`.`datetime`, '%Y-%m-%dT%TZ')) = '2021')
+group by
+    `d`.`department`,
+    `d`.`id`
+having
+    (`hired` > (
+    select
+        avg(`c`.`cant`)
+    from
+        (
+        select
+            count(`he`.`department_id`) AS `cant`
+        from
+            `hired_employees` `he`
+        where
+            ((`he`.`department_id` is not null)
+                and (year(str_to_date(`he`.`datetime`, '%Y-%m-%dT%TZ')) = '2021'))
+        group by
+            `he`.`department_id`) `c`))
+order by
+    `hired` desc;
