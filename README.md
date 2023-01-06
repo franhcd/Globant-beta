@@ -22,7 +22,9 @@ Los ddl de la creación de las tablas se encuentran en ".../Database/DDL Tables"
 
 ### Move historic data from files in CSV format to the new database
 
-Para este punto opté por utilizar el servicio **AWS Lambda.** Este servicio es serverless, por lo que es rápido, ágil y de bajo costo.
+Para este punto opté por utilizar el servicio **AWS Lambda.** Este servicio es serverless, rápido, ágil, se integra muy bien con otros servicios/funcionalidades y es de bajo costo.
+
+Los archivos csv se encuentran en el servicio de Object Storage **AWS S3.**
 
 _El código de esta función lambda y el template de implementación por CloudFormation se encuentran en ".../Lambda/History/"_
 
@@ -55,8 +57,51 @@ La estructura del body debe respetar las siguientes reglas de formato:
 
 Por ejemplo, para una inserción de 3 filas de datos en la tabla “Hired Employees” el body sería el siguiente:
 
-> 2000, Jose Castro, 2021-07-27T15:12:20Z, 12, 6  
-> 2001, Ramon Cepeda, 2022-06-13T16:02:18Z, 5, 2  
-> 2002, Candelaria Botta, 2021-08-23T21:14:07Z, , 65
+```plaintext
+2000, Jose Castro, 2021-07-27T15:12:20Z, 12, 6
+2001, Ramon Cepeda, 2022-06-13T16:02:18Z, 5, 2
+2002, Candelaria Botta, 2021-08-23T21:14:07Z, , 65
+```
+
+---
+
+### Create a feature to backup for each table and save it in the file system AVRO format
+
+Para esta funcionalidad desarrollé una función Lambda. 
+
+_El código de esta función lambda y el template de implementación por CloudFormation se encuentran en ".../Lambda/Backup/"_
+
+#### Uso de la función
+
+Para realizar un backup de una tabla es necesario pasar como Input un json con el nombre de la misma.
+
+Por ejemplo, para la tabla ‘departments’ el input sería el siguiente:
+
+```plaintext
+{ “table”: “departments” }
+```
+
+El correspondiente backup se guarda en el servicio de Object Storage **AWS S3**. 
+
+![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/6bc9f0a7acc84cc8f14425bfbf8f8e1f76eb6eb6c2180394.png)
+
+---
+
+### Create a feature to restore a certain table with its backup
+
+Para esta funcionalidad desarrollé una función Lambda. 
+
+_El código de esta función lambda y el template de implementación por CloudFormation se encuentran en ".../Lambda/Restore/"_
+
+#### Uso de la función
+
+Para realizar un backup de una tabla es necesario pasar como Input un json con el nombre de la tabla y el URI del objeto de **AWS S3** correspondiente al backup deseado a restaurar.
+
+Por ejemplo, para la tabla ‘departments’ el input sería el siguiente:
+
+```plaintext
+{ "table": "departments",
+"file": "s3://globant-container/output/department_2023-01-02.avro"}
+```
 
 ---
