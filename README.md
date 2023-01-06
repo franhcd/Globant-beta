@@ -115,3 +115,11 @@ Por ejemplo, para la tabla ‘departments’ el input sería el siguiente:
 Para este punto opté por crear una vista en la base de datos. De esta forma, los datos estarán siempre actualizados y la posible comunicación con otras tecnologías se podrá resuelver de manera muy sencilla con la misma conexión a la BD.
 
 _El DDL de la creación de la vista se encuentra en ".../Lambda/Views/View1"_
+
+---
+
+### List of Id's, name and number of employees hired of each department that hired more employees that the mean of employees hired in 2021 for all departments 
+
+Similar al punto anterior, desarrollé una vista en la base de datos.
+
+_El DDL de la creación de la vista se encuentra en ".../Lambda/Views/View2"_
