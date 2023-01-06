@@ -10,7 +10,7 @@ La base de datos fue implementada a través del servicio **AWS RDS**, ya que est
 
 #### Conexión
 
-Para la conexión con la BD opté por disponerla accesible públicamente. No obstante, para resguardar la seguridad, creé una regla en el security group asociado a la instancia que permita el acceso únicamente desde mi IP, por el protocolo TCP y el puerto 3306 (MySQL).
+Para la conexión con la BD opté por disponerla accesible públicamente utilizando un Internet Gateway en la VPC. No obstante, para resguardar la seguridad, creé una regla en el security group asociado a la instancia que permita el acceso únicamente desde mi IP, por el protocolo TCP y el puerto 3306 (MySQL).
 
 ![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/3e690eee43b9bd9b0a55570c722c3017030677a1496dc26b.png)
 
@@ -63,6 +63,10 @@ Por ejemplo, para una inserción de 3 filas de datos en la tabla “Hired Employ
 2002, Candelaria Botta, 2021-08-23T21:14:07Z, , 65
 ```
 
+Cada llamada a la API que cumpla con el header requerido (aun teniendo errores en el body) es almacenada como registro en un archivo CSV en el servicio **AWS S3.**
+
+![](https://33333.cdn.cke-cs.com/kSW7V9NHUXugvhoQeFaf/images/f149af790c5a67d7654dd2dc81f6554a529b879a3e9070dd.png)
+
 ---
 
 ### Create a feature to backup for each table and save it in the file system AVRO format
@@ -105,3 +109,9 @@ Por ejemplo, para la tabla ‘departments’ el input sería el siguiente:
 ```
 
 ---
+
+### Number of empoyees hired for each job and department in 2021 divided by quarter. 
+
+Para este punto opté por crear una vista en la base de datos. De esta forma, los datos estarán siempre actualizados y la posible comunicación con otras tecnologías se podrá resuelver de manera muy sencilla con la misma conexión a la BD.
+
+_El DDL de la creación de la vista se encuentra en ".../Lambda/Views/View1"_
