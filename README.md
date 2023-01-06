@@ -18,8 +18,45 @@ Para la conexión con la BD opté por disponerla accesible públicamente. No obs
 
 Los ddl de la creación de las tablas se encuentran en ".../Database/DDL Tables"
 
+---
+
 ### Move historic data from files in CSV format to the new database
 
 Para este punto opté por utilizar el servicio **AWS Lambda.** Este servicio es serverless, por lo que es rápido, ágil y de bajo costo.
 
-El código de esta función lambda y el template de implementación por CloudFormation se encuentran en ".../Lambda/History/"
+_El código de esta función lambda y el template de implementación por CloudFormation se encuentran en ".../Lambda/History/"_
+
+---
+
+### Create a REST API service to receive new data
+
+El servicio utilizado fue **AWS APIGateway.** Con este servicio podemos crear una API y administrarla.
+
+Esta api está configurada únicamente con el método POST; y por detrás cada llamada ejecuta una función Lambda de **AWS Lambda**.
+
+_El código de esta función lambda y el template de implementación por CloudFormation se encuentran en ".../Lambda/Post/"_
+
+#### Uso de la API
+
+La URL de la api es la siguiente: [https://hbt1gdr7g3.execute-api.us-east-1.amazonaws.com/Globant-beta](https://hbt1gdr7g3.execute-api.us-east-1.amazonaws.com/Globant-beta)
+
+##### Formato del Header
+
+Como primer requerimiento se necesita la presencia de un header cuyo KEY es ‘table’ y sus posibles VALUES son: '**departments**', ‘**jobs**’, ‘**hired\_employees**’.
+
+##### Formato del Body
+
+La estructura del body debe respetar las siguientes reglas de formato:
+
+*   ‘Content-Type’ de tipo **text/plain.**
+*   Filas enteras separadas por salto de línea.
+*   Campos separados por coma (,) y sin el uso de comillas simples ni dobles.
+*   Para valores NULL, dejar el campo vacío.
+
+Por ejemplo, para una inserción de 3 filas de datos en la tabla “Hired Employees” el body sería el siguiente:
+
+> 2000, Jose Castro, 2021-07-27T15:12:20Z, 12, 6  
+> 2001, Ramon Cepeda, 2022-06-13T16:02:18Z, 5, 2  
+> 2002, Candelaria Botta, 2021-08-23T21:14:07Z, , 65
+
+---
